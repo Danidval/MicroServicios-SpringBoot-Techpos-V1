@@ -1,4 +1,4 @@
-```markdown
+
 # MicroServicioTechposV1 - Sistema de Gestión TechPOS
 
 Este es un microservicio desarrollado con **Spring Boot 3.2.5** para la gestión de usuarios y autenticación segura en una plataforma POS (Point of Sale) llamada **TechPOS**.
