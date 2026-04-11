@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * Controlador de Gestión de Usuarios.
  * Implementa las operaciones CRUD y reglas de negocio para la administración de cuentas.
  * Cumple con los criterios de evaluación de codificación modular y comentarios.
- * * @author [Tu Nombre/Aprendiz]
+ * * @author Danid Vallejos
  * @version 1.0
  */
 @Controller

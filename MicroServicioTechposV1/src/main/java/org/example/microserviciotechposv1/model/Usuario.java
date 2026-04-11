@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * Entidad de persistencia que representa la tabla "usuario" en la base de datos.
  * Define la estructura de datos y reglas de validación para TechPOS.
  *
- * @author [Tu Nombre/Aprendiz]
+ * * @author Danid Vallejos
  * @version 1.1
  */
 @Entity // Indica que esta clase es una entidad JPA (se mapea a una tabla)

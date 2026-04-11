@@ -15,7 +15,7 @@ import java.util.Collections;
  * Servicio personalizado para la gestión de detalles de usuario.
  * Implementa UserDetailsService para integrar la lógica de autenticación de Spring Security
  * con la base de datos del proyecto TechPOS.
- * * @author [Tu Nombre/Aprendiz]
+ * * @author Danid Vallejos
  * @version 1.0
  */
 @Service

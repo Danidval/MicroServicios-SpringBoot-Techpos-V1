@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
  * Configuración de seguridad del sistema (Spring Security).
  * Define las reglas de acceso, encriptación de contraseñas y gestión de sesiones
  * de acuerdo a los requerimientos técnicos del proyecto.
- * * @author [Tu Nombre/Aprendiz]
+ * * @author Danid Vallejos
  * @version 1.0
  */
 @Configuration

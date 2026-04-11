@@ -5,7 +5,7 @@ package org.example.microserviciotechposv1.model;
  * Estos roles determinan los niveles de acceso y permisos dentro de los
  * diferentes módulos de la aplicación (Web y Móvil).
  * * Basado en los casos de uso y requerimientos de seguridad del proyecto.
- * * @author [Tu Nombre/Aprendiz]
+ * * @author Danid Vallejos
  * @version 1.0
  */
 public enum Rol {

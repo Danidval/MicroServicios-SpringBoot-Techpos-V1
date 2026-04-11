@@ -12,7 +12,7 @@ import java.util.List;
  * Servicio de Negocio para la gestión de Usuarios.
  * Proporciona métodos para la manipulación de datos, aplicando reglas de seguridad
  * y gestión de transacciones.
- * * @author [Tu Nombre/Aprendiz]
+ * * @author Danid Vallejos
  * @version 1.0
  */
 @Service

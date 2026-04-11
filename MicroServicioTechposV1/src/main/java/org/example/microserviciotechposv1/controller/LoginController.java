@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 /**
  * Controlador encargado de la gestión de rutas de acceso y visualización del panel principal.
  * Maneja la interacción entre el motor de plantillas y el contexto de seguridad.
- * * @author [Tu Nombre/Aprendiz]
+ * * @author Danid Vallejos
  * @version 1.0
  */
 @Controller

@@ -9,7 +9,7 @@ import java.util.Optional;
  * Proporciona los métodos necesarios para realizar operaciones CRUD y consultas
  * personalizadas en la base de datos utilizando Spring Data JPA.
  * * Cumple con el requerimiento de integración de herramientas para almacenamiento de datos.
- * * @author [Tu Nombre/Aprendiz]
+ * * @author Danid Vallejos
  * @version 1.0
  */
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
