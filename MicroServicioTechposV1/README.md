@@ -87,19 +87,20 @@ MicroServicioTechposV1/
 ├── .mvn/               (wrapper de Maven)
 └── target/             (código compilado)
 ```
-Nota: Se incluyen las carpetas .idea, .mvn y target para reflejar la estructura real, pero el foco del desarrollo está en src/main/java y src/main/resources.
+ **Nota:** Se incluyen las carpetas `.idea`, `.mvn` y `target` para reflejar la estructura real, pero el foco del desarrollo está en `src/main/java` y `src/main/resources`.
 
-🧪 Funcionalidades de Microservicio
-Consumo de Datos JSON: Acceso a la lista de usuarios mediante /api/usuarios.
+## 🧪 Funcionalidades de Microservicio
 
-Prueba de Endpoint: Acceso directo a la data cruda mediante http://localhost:8080/api/usuarios (requiere rol de administrador).
+- **Consumo de Datos JSON:** Acceso a la lista de usuarios mediante `/api/usuarios`.
+- **Prueba de Endpoint:** Acceso directo a los datos crudos mediante `http://localhost:8080/api/usuarios` (requiere rol de administrador).
+- **Dashboard Dinámico:** Personalización de la UI basada en el rol recuperado del contexto de seguridad.
+- **Mensajería Flash:** Feedback inmediato al usuario tras operaciones en la base de datos.
 
-Dashboard Dinámico: Personalización de la UI basada en el rol recuperado del contexto de seguridad.
+## 📄 Licencia
 
-Mensajería Flash: Feedback inmediato al usuario tras operaciones en la base de datos.
+Este proyecto cumple con los requisitos académicos del programa de Análisis y Desarrollo de Software del SENA.
 
-📄 Licencia
-Este proyecto cumple con los requerimientos académicos del programa de Análisis y Desarrollo de Software del SENA.
+## ✒️ Autor
 
-✒️ Autor
-Danid Esneider Vallejos Almeida GitHub: Danidval
+**Danid Esneider Vallejos Almeida**  
+GitHub: [Danidval](https://github.com/Danidval)
