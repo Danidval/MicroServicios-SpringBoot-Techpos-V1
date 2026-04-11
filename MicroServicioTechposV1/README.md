@@ -86,6 +86,7 @@ MicroServicioTechposV1/
 ├── .idea/              (configuración del IDE)
 ├── .mvn/               (wrapper de Maven)
 └── target/             (código compilado)
+```
 Nota: Se incluyen las carpetas .idea, .mvn y target para reflejar la estructura real, pero el foco del desarrollo está en src/main/java y src/main/resources.
 
 🧪 Funcionalidades de Microservicio
