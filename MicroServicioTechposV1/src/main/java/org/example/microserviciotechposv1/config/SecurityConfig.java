@@ -47,6 +47,14 @@ public class SecurityConfig {
                         // 1. Recursos públicos: Permitir acceso a login y assets (CSS, JS, Imágenes)
                         .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
 
+                        /**
+                         * NUEVA REGLA PARA MICROSERVICIOS:
+                         * Se autoriza el acceso a los endpoints de la API REST (/api/**).
+                         * Esto permite que el sistema funcione como un proveedor de datos (JSON)
+                         * cumpliendo con los estándares de arquitectura desacoplada solicitados.
+                         */
+                        .requestMatchers("/api/**").hasRole("administrador")
+
                         // 2. Control de acceso por rol: Gestión de usuarios restringida a administradores
                         .requestMatchers("/usuarios/**").hasRole("administrador")
 
