@@ -1,0 +1,157 @@
+<!-- ============================================================ -->
+<!-- LISTA DE USUARIOS (CRUD) - TechPOS V3                        -->
+============================================================== -->
+<!--
+    Este archivo es una plantilla Thymeleaf que muestra una tabla
+    con todos los usuarios registrados. Solo es accesible para
+    usuarios con rol ADMINISTRADOR.
+-->
+
+<!DOCTYPE html>
+<!-- Declaración del tipo de documento HTML5 -->
+
+<!-- Inicio del documento HTML con el namespace de Thymeleaf -->
+<!-- xmlns:th permite usar expresiones Thymeleaf como th:each, th:text, etc. -->
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Cabecera del documento: contiene metadatos, título y enlaces a estilos -->
+<head>
+    <!-- Codificación de caracteres UTF-8 (soporta tildes, eñes, símbolos) -->
+    <meta charset="UTF-8">
+
+    <!-- Título que aparece en la pestaña del navegador -->
+    <title>Lista de Usuarios</title>
+
+    <!-- Enlace a Bootstrap 5.3 (CDN) para estilos responsivos y componentes -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Estilos personalizados adicionales -->
+    <style>
+        /* Ajusta el padding del botón de cierre en las alertas */
+        .alert-dismissible .btn-close {
+            padding: 1.25rem;
+        }
+    </style>
+</head>
+
+<!-- Cuerpo del documento: aquí se muestra el contenido visible -->
+<body>
+<!-- Contenedor principal con margen superior (mt-4) -->
+<div class="container mt-4">
+
+    <!-- Título principal de la página -->
+    <h2>Gestión de Usuarios</h2>
+
+    <!-- ------------------------------------------------------ -->
+    <!-- MENSAJES FLASH (success y warning)                    -->
+    <!-- ------------------------------------------------------ -->
+
+    <!-- Mensaje de éxito (ej: "Usuario creado correctamente") -->
+    <!-- th:if="${success}" → muestra el div solo si existe la variable 'success' en el modelo -->
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <!-- th:text="${success}" → inserta el texto del mensaje de éxito -->
+        <span th:text="${success}"></span>
+        <!-- Botón para cerrar la alerta (requiere Bootstrap JS) -->
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Mensaje de advertencia (ej: "Solo el administrador puede cambiar contraseñas") -->
+    <div th:if="${warning}" class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>⚠️ Atención:</strong>
+        <!-- th:text="${warning}" → inserta el texto de advertencia -->
+        <span th:text="${warning}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- ------------------------------------------------------ -->
+    <!-- BOTONES DE ACCIÓN                                      -->
+    <!-- ------------------------------------------------------ -->
+    <div class="d-flex gap-2">
+        <!-- Enlace a la ruta /usuarios/nuevo para crear un nuevo usuario -->
+        <a th:href="@{/usuarios/nuevo}" class="btn btn-success mb-3">➕ Nuevo Usuario</a>
+
+        <!-- Enlace para volver al dashboard principal -->
+        <a th:href="@{/dashboard}" class="btn btn-secondary mb-3">⬅ Volver al Dashboard</a>
+    </div>
+
+    <!-- ------------------------------------------------------ -->
+    <!-- TABLA DE USUARIOS                                      -->
+    <!-- ------------------------------------------------------ -->
+    <table class="table table-bordered table-striped">
+        <!-- Cabecera de la tabla (fila con los títulos de columna) -->
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>           <!-- Identificador numérico -->
+            <th>Nombre</th>       <!-- Nombre completo -->
+            <th>Usuario</th>      <!-- Nombre de login -->
+            <th>Rol</th>          <!-- Rol en el sistema -->
+            <th>Activo</th>       <!-- Estado (activo/inactivo) -->
+            <th>Acciones</th>     <!-- Botones Editar/Eliminar -->
+        </tr>
+        </thead>
+
+        <!-- Cuerpo de la tabla: se llena dinámicamente con los usuarios -->
+        <tbody>
+        <!-- th:each="u : ${usuarios}" → itera sobre la lista 'usuarios' del modelo -->
+        <!-- Cada usuario se guarda en la variable 'u' -->
+        <tr th:each="u : ${usuarios}">
+
+            <!-- Columna ID: muestra u.idUsuario -->
+            <td th:text="${u.idUsuario}">1</td>
+
+            <!-- Columna Nombre: muestra u.nombre -->
+            <td th:text="${u.nombre}">Juan</td>
+
+            <!-- Columna Usuario: muestra u.usuario (nombre de login) -->
+            <td th:text="${u.usuario}">juan</td>
+
+            <!-- -------------------------------------------------- -->
+            <!-- Columna Rol (versión CORREGIDA)                    -->
+            <!-- -------------------------------------------------- -->
+            <!--
+                Se muestra el rol como una "badge" (etiqueta).
+                - Si el rol es 'administrador' → fondo primario (bg-primary).
+                - Cualquier otro rol (tecnico, recepcionista, inventario) → fondo info (bg-info).
+                Se usa u.rol.name() porque 'rol' es un enum y se necesita su nombre como String.
+            -->
+            <td>
+                        <span th:text="${u.rol}"
+                              class="badge"
+                              th:classappend="${u.rol.name() == 'administrador' ? 'bg-primary' : 'bg-info'}">
+                        </span>
+            </td>
+
+            <!-- Columna Activo: muestra "Activo" en verde o "Inactivo" en rojo -->
+            <!-- th:class asigna una clase CSS condicional -->
+            <td>
+                        <span th:text="${u.activo} ? 'Activo' : 'Inactivo'"
+                              th:class="${u.activo} ? 'text-success fw-bold' : 'text-danger fw-bold'">
+                        </span>
+            </td>
+
+            <!-- Columna de acciones (botones Editar y Eliminar) -->
+            <td>
+                <div class="btn-group">
+                    <!-- Botón Editar: redirige a /usuarios/editar/{id} -->
+                    <a th:href="@{/usuarios/editar/{id}(id=${u.idUsuario})}"
+                       class="btn btn-sm btn-warning">Editar</a>
+
+                    <!-- Botón Eliminar: redirige a /usuarios/eliminar/{id} -->
+                    <!-- onclick muestra un cuadro de confirmación antes de eliminar -->
+                    <a th:href="@{/usuarios/eliminar/{id}(id=${u.idUsuario})}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</a>
+                </div>
+            </td>
+        </tr>
+        <!-- Fin del bucle th:each -->
+        </tbody>
+    </table>
+    <!-- Fin de la tabla -->
+</div>
+<!-- Fin del contenedor principal -->
+
+<!-- Script de Bootstrap (necesario para el funcionamiento de alertas, botones, etc.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

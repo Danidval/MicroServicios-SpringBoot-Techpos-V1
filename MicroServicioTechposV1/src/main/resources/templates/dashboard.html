@@ -1,0 +1,120 @@
+<!-- ============================================================ -->
+<!-- DASHBOARD PRINCIPAL - TechPOS V3                             -->
+<!-- ============================================================ -->
+<!--
+    Esta es la página principal que ve el usuario después de iniciar sesión.
+    Muestra:
+    - Nombre del usuario y su rol.
+    - Tarjetas con métricas de ejemplo (reparaciones activas, stock bajo).
+    - Enlace a la gestión de usuarios (SOLO visible para administradores).
+    - Botón de cierre de sesión.
+-->
+
+<!DOCTYPE html>
+<!-- Declaración de tipo de documento HTML5 -->
+
+<!--
+    xmlns:th → permite usar expresiones Thymeleaf (th:text, th:if, th:each, etc.)
+    xmlns:sec → permite usar atributos de Spring Security (sec:authorize)
+-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- Cabecera del documento -->
+<head>
+    <!-- Codificación UTF-8 (soporta tildes, eñes, caracteres especiales) -->
+    <meta charset="UTF-8">
+
+    <!-- Título que aparece en la pestaña del navegador -->
+    <title>Dashboard - TechPOS</title>
+
+    <!-- Enlace a Bootstrap 5.3 (CDN) para estilos y componentes responsivos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<!-- Cuerpo del documento (contenido visible) -->
+<body>
+<!-- Contenedor principal con margen superior (mt-4) -->
+<div class="container mt-4">
+
+    <!-- ------------------------------------------------------ -->
+    <!-- BARRA SUPERIOR: Saludo + Botón de logout              -->
+    <!-- ------------------------------------------------------ -->
+    <div class="d-flex justify-content-between align-items-center">
+        <!-- Título de bienvenida: muestra el nombre del usuario autenticado -->
+        <!-- th:text="${username}" → inserta el atributo 'username' enviado desde LoginController -->
+        <h1>Bienvenido, <span th:text="${username}">Usuario</span></h1>
+
+        <!-- Formulario de cierre de sesión (POST a /logout) -->
+        <!-- Spring Security intercepta esta URL y cierra la sesión -->
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+        </form>
+    </div>
+
+    <!-- Muestra el rol del usuario (ej: ROLE_administrador, ROLE_tecnico, etc.) -->
+    <!-- th:text="${rol}" → inserta el rol enviado desde LoginController -->
+    <p>Rol: <strong th:text="${rol}">ROL_DESCONOCIDO</strong></p>
+    <hr> <!-- Línea separadora -->
+
+    <!-- ------------------------------------------------------ -->
+    <!-- MENSAJE DE ACCESO DENEGADO (opcional)                  -->
+    <!-- ------------------------------------------------------ -->
+    <!--
+        Se muestra si la URL contiene el parámetro 'prohibido'.
+        Ejemplo: cuando un usuario no administrador intenta acceder a /usuarios,
+        SecurityConfig redirige a /dashboard?prohibido y se muestra esta alerta.
+    -->
+    <div th:if="${param.prohibido}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <strong>⛔ Acceso Denegado:</strong> No tienes permisos de administrador para acceder a esa sección.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- ------------------------------------------------------ -->
+    <!-- TARJETAS DE MÉTRICAS (datos estáticos de ejemplo)     -->
+    <!-- ------------------------------------------------------ -->
+    <div class="row">
+        <!-- Tarjeta: Reparaciones activas -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5>Reparaciones activas</h5>
+                    <h2>12</h2> <!-- Valor estático de ejemplo -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta: Stock bajo -->
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5>Stock bajo</h5>
+                    <h2>3</h2> <!-- Valor estático de ejemplo -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ------------------------------------------------------ -->
+    <!-- ENLACE A GESTIÓN DE USUARIOS (SOLO ADMINISTRADORES)    -->
+    <!-- ------------------------------------------------------ -->
+    <div class="mt-4">
+        <!--
+            sec:authorize="hasRole('administrador')" → Este bloque SOLO se renderiza
+            si el usuario autenticado tiene el rol 'administrador'.
+            Los técnicos, recepcionistas e inventario NO verán este enlace.
+        -->
+        <div sec:authorize="hasRole('administrador')">
+            <!-- Enlace a la lista de usuarios (CRUD completo) -->
+            <a th:href="@{/usuarios}" class="btn btn-info shadow-sm">
+                👤 Gestionar Usuarios (CRUD)
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Fin del contenedor -->
+
+<!-- Script de Bootstrap (necesario para alertas, tooltips, etc.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Usuario</title>
+    <!-- Bootstrap 5 para estilos responsivos y componentes bonitos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- Contenedor centrado con ancho máximo para que no se vea muy ancho en pantallas grandes -->
+<div class="container mt-4" style="max-width: 500px;">
+
+    <!-- Título dinámico: "Crear Usuario" o "Editar Usuario" según si tiene ID -->
+    <h2 th:text="${objUsuario.idUsuario} == null ? 'Crear Usuario' : 'Editar Usuario'"></h2>
+
+    <!-- Formulario con Thymeleaf -->
+    <form th:action="@{/usuarios/guardar}" th:object="${objUsuario}" method="post">
+
+        <!-- Campo oculto para enviar el ID (necesario en edición) -->
+        <input type="hidden" th:field="*{idUsuario}">
+
+        <!-- ==================== CAMPO NOMBRE COMPLETO ==================== -->
+        <div class="mb-3">
+            <label class="form-label">Nombre Completo</label>
+            <input type="text"
+                   th:field="*{nombre}"
+                   class="form-control"
+                   th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''"
+                   required>
+            <!-- Muestra errores de validación de Spring -->
+            <div class="invalid-feedback"
+                 th:if="${#fields.hasErrors('nombre')}"
+                 th:errors="*{nombre}">
+                Error en el nombre
+            </div>
+        </div>
+
+        <!-- ==================== CAMPO NOMBRE DE USUARIO (LOGIN) ==================== -->
+        <div class="mb-3">
+            <label class="form-label">Nombre de Usuario (Login)</label>
+            <input type="text"
+                   th:field="*{usuario}"
+                   class="form-control"
+                   th:classappend="${#fields.hasErrors('usuario')} ? 'is-invalid' : ''"
+                   required>
+            <div class="invalid-feedback"
+                 th:if="${#fields.hasErrors('usuario')}"
+                 th:errors="*{usuario}">
+                Error en el nombre de usuario
+            </div>
+        </div>
+
+        <!-- ==================== CAMPO CONTRASEÑA ==================== -->
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input type="password"
+                   th:field="*{contrasena}"
+                   class="form-control"
+                   th:classappend="${#fields.hasErrors('contrasena')} ? 'is-invalid' : ''"
+                   th:required="${objUsuario.idUsuario == null}"
+                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+                   title="Mínimo 8 caracteres, debe incluir mayúscula, minúscula y número. Se permiten símbolos como *">
+
+            <!-- Mensaje de error de validación -->
+            <div class="invalid-feedback"
+                 th:if="${#fields.hasErrors('contrasena')}"
+                 th:errors="*{contrasena}">
+            </div>
+
+            <!-- Mensaje solo visible en modo edición -->
+            <small th:if="${objUsuario.idUsuario != null}" class="text-muted">
+                Dejar en blanco para mantener la contraseña actual.
+            </small>
+
+            <!-- Ayuda solo visible al crear un nuevo usuario -->
+            <small id="passwordHelpBlock"
+                   class="form-text text-muted"
+                   th:if="${objUsuario.idUsuario == null}">
+                Mínimo 8 caracteres: letras (mayúsculas/minúsculas) y números.
+            </small>
+        </div>
+
+        <!-- ==================== CAMPO ROL ==================== -->
+        <div class="mb-3">
+            <label class="form-label">Rol del Sistema</label>
+            <select th:field="*{rol}" class="form-select">
+                <option value="administrador">Administrador</option>
+                <option value="tecnico">Técnico</option>
+                <option value="recepcionista">Recepcionista</option>
+                <option value="inventario">Inventario</option>
+            </select>
+        </div>
+
+        <!-- ==================== CHECKBOX ACTIVO ==================== -->
+        <div class="mb-3 form-check">
+            <input type="checkbox"
+                   th:field="*{activo}"
+                   class="form-check-input"
+                   id="checkActivo">
+            <label class="form-check-label" for="checkActivo">
+                Usuario Activo
+            </label>
+        </div>
+
+        <!-- ==================== BOTONES ==================== -->
+        <div class="d-grid gap-2">
+            <!-- Botón principal de guardar -->
+            <button type="submit" class="btn btn-primary">
+                Guardar Cambios
+            </button>
+
+            <!-- Botón para cancelar y volver a la lista -->
+            <a th:href="@{/usuarios}" class="btn btn-secondary">
+                Cancelar
+            </a>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>

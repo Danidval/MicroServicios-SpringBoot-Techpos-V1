@@ -1,0 +1,110 @@
+<!-- ============================================================ -->
+<!-- PÁGINA DE LOGIN - TechPOS V3                                 -->
+<!-- ============================================================ -->
+<!--
+    Esta es la página de autenticación del sistema.
+    Los usuarios ingresan su nombre de usuario y contraseña.
+    Spring Security procesa el formulario y redirige según el resultado:
+    - Login exitoso → /dashboard
+    - Credenciales incorrectas → /login?error
+    - Cierre de sesión → /login?logout
+-->
+
+<!DOCTYPE html>
+<!-- Declaración del tipo de documento HTML5 -->
+
+<!-- Inicio del documento HTML con el namespace de Thymeleaf -->
+<!-- xmlns:th permite usar expresiones Thymeleaf como th:action, th:if, etc. -->
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Cabecera del documento -->
+<head>
+    <!-- Codificación UTF-8 (soporta tildes, eñes, caracteres especiales) -->
+    <meta charset="UTF-8">
+
+    <!-- Título que aparece en la pestaña del navegador -->
+    <title>Login - TechPOS</title>
+
+    <!-- Enlace a Bootstrap 5.3 (CDN) para estilos y componentes responsivos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<!-- Cuerpo del documento: fondo gris claro (bg-light) para mejor contraste -->
+<body class="bg-light">
+
+<!-- Contenedor principal con margen superior y ancho máximo de 400px -->
+<!-- mt-5 = margin-top: 3rem, style="max-width: 400px;" centra mejor el formulario -->
+<div class="container mt-5" style="max-width: 400px;">
+
+    <!-- Tarjeta (card) con sombra para dar efecto de elevación -->
+    <div class="card shadow">
+
+        <!-- Cabecera de la tarjeta: fondo primario (azul), texto blanco, centrado -->
+        <div class="card-header bg-primary text-white text-center">
+            <h3>🔧 TechPOS V3</h3> <!-- Icono de herramienta + nombre del sistema -->
+        </div>
+
+        <!-- Cuerpo de la tarjeta: contiene el formulario y los mensajes -->
+        <div class="card-body">
+
+            <!-- ================================================== -->
+            <!-- FORMULARIO DE LOGIN                               -->
+            <!-- ================================================== -->
+            <!--
+                th:action="@{/login}" → Envía el formulario a la URL /login.
+                Spring Security intercepta esta URL y procesa la autenticación.
+                method="post" → Los datos se envían por POST (seguro, no van en la URL).
+            -->
+            <form th:action="@{/login}" method="post">
+
+                <!-- Campo: Nombre de usuario -->
+                <div class="mb-3">
+                    <label>Usuario</label>
+                    <!--
+                        name="username" → Nombre del campo esperado por Spring Security.
+                        class="form-control" → Estilo Bootstrap.
+                        required → El navegador no permite enviar vacío.
+                        autofocus → El cursor se posiciona automáticamente aquí al cargar la página.
+                    -->
+                    <input type="text" name="username" class="form-control" required autofocus>
+                </div>
+
+                <!-- Campo: Contraseña -->
+                <div class="mb-3">
+                    <label>Contraseña</label>
+                    <!--
+                        name="password" → Nombre del campo esperado por Spring Security.
+                        type="password" → Oculta los caracteres con puntos/asteriscos.
+                        required → No permite enviar vacío.
+                    -->
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+
+                <!-- Botón de envío: ancho completo (w-100) y color primario -->
+                <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+            </form>
+
+            <!-- ================================================== -->
+            <!-- MENSAJES CONDICIONALES (error / logout)           -->
+            <!-- ================================================== -->
+
+            <!-- Mensaje de error: se muestra si la URL contiene el parámetro 'error' -->
+            <!-- Ejemplo: /login?error (Spring Security redirige aquí automáticamente al fallar login) -->
+            <div th:if="${param.error}" class="alert alert-danger mt-3">
+                Usuario o contraseña incorrectos
+            </div>
+
+            <!-- Mensaje de cierre de sesión: se muestra si la URL contiene el parámetro 'logout' -->
+            <!-- Ejemplo: /login?logout (Spring Security redirige aquí después de cerrar sesión) -->
+            <div th:if="${param.logout}" class="alert alert-info mt-3">
+                Sesión cerrada correctamente
+            </div>
+
+        </div>
+        <!-- Fin del cuerpo de la tarjeta -->
+    </div>
+    <!-- Fin de la tarjeta -->
+</div>
+<!-- Fin del contenedor -->
+</body>
+</html>

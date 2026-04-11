@@ -1,0 +1,58 @@
+# ============================================================
+# .gitignore - TechPOS V3
+# ============================================================
+# Este archivo le dice a Git qué archivos/carpetas NO debe rastrear.
+# Todo lo listado aquí se ignora al hacer commit.
+
+# ------------------------------------------------------------
+# ARCHIVOS GENERADOS POR MAVEN / SPRING BOOT
+# ------------------------------------------------------------
+
+# HELP.md - Archivo de ayuda generado por Spring Initializr (no necesario en el repo)
+HELP.md
+
+# target/ - Carpeta donde Maven coloca los archivos compilados (.class, .jar, etc.)
+target/
+
+# .mvn/wrapper/maven-wrapper.jar - JAR del Maven Wrapper (se puede regenerar)
+.mvn/wrapper/maven-wrapper.jar
+
+# EXCEPCIONES: No ignorar ciertos subdirectorios 'target' dentro de src
+# La siguiente línea permite rastrear archivos dentro de src/main/**/target/ (ej. resources)
+!**/src/main/**/target/
+
+# Lo mismo para src/test/**/target/
+!**/src/test/**/target/
+
+# ------------------------------------------------------------
+# CONFIGURACIONES DE ENTORNOS DE DESARROLLO (IDE)
+# ------------------------------------------------------------
+
+### STS (Spring Tool Suite) ###
+.apt_generated      # Archivos generados por procesadores de anotaciones
+.classpath          # Classpath de Eclipse/STS
+.factorypath        # Fábrica de objetos (Eclipse)
+.project            # Archivo de proyecto de Eclipse
+.settings/          # Carpeta de configuración específica del workspace
+.springBeans        # Configuración de Spring Beans en Eclipse
+.sts4-cache         # Caché de Spring Tool Suite 4
+
+### IntelliJ IDEA ###
+.idea/              # Carpeta de configuración del proyecto en IntelliJ
+*.iws               # Archivo de workspace de IntelliJ (versiones antiguas)
+*.iml               # Archivo de módulo de IntelliJ
+*.ipr               # Archivo de proyecto de IntelliJ
+
+### NetBeans ###
+/nbproject/private/ # Configuración privada de NetBeans
+/nbbuild/           # Build temporal de NetBeans
+/dist/              # Directorio de distribución (NetBeans)
+/nbdist/            # Distribución de NetBeans
+/.nb-gradle/        # Configuración de Gradle en NetBeans
+build/              # Carpeta de build genérica (NetBeans/Gradle)
+# EXCEPCIONES: No ignorar ciertos subdirectorios 'build' dentro de src
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/            # Carpeta de configuración de Visual Studio Code
