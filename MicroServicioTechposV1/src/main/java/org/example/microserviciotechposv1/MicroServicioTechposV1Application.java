@@ -22,7 +22,6 @@ public class MicroServicioTechposV1Application {
      */
     public static void main(String[] args) {
         SpringApplication.run(MicroServicioTechposV1Application.class, args);
-
     }
 
 }

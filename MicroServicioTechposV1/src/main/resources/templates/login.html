@@ -1,110 +1,149 @@
-<!-- ============================================================ -->
-<!-- PÁGINA DE LOGIN - TechPOS V3                                 -->
-<!-- ============================================================ -->
+<!-- ================================================================== -->
+<!-- PÁGINA DE LOGIN - TechPOS                                          -->
+<!-- ================================================================== -->
 <!--
-    Esta es la página de autenticación del sistema.
-    Los usuarios ingresan su nombre de usuario y contraseña.
+    Propósito: Autenticación de usuarios en el sistema TechPOS.
     Spring Security procesa el formulario y redirige según el resultado:
-    - Login exitoso → /dashboard
-    - Credenciales incorrectas → /login?error
-    - Cierre de sesión → /login?logout
+      - Login exitoso       → /dashboard
+      - Credenciales inválidas → /login?error (muestra mensaje de error)
+      - Cierre de sesión    → /login?logout (muestra mensaje de cierre)
 -->
-
 <!DOCTYPE html>
-<!-- Declaración del tipo de documento HTML5 -->
-
-<!-- Inicio del documento HTML con el namespace de Thymeleaf -->
-<!-- xmlns:th permite usar expresiones Thymeleaf como th:action, th:if, etc. -->
+<!--
+    xmlns:th="http://www.thymeleaf.org"
+    Habilita los atributos de Thymeleaf en el HTML:
+      - th:action   → define dinámicamente la URL de destino del formulario.
+      - th:if       → renderiza condicionalmente elementos (ej. mensajes de error/logout).
+      - th:field    → enlaza campos con propiedades de un objeto (no usado aquí pero documentado).
+-->
 <html xmlns:th="http://www.thymeleaf.org">
-
-<!-- Cabecera del documento -->
 <head>
-    <!-- Codificación UTF-8 (soporta tildes, eñes, caracteres especiales) -->
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">                              <!-- Soporta tildes, eñes, emojis -->
+    <title>Login - TechPOS</title>                     <!-- Título en la pestaña del navegador -->
 
-    <!-- Título que aparece en la pestaña del navegador -->
-    <title>Login - TechPOS</title>
-
-    <!-- Enlace a Bootstrap 5.3 (CDN) para estilos y componentes responsivos -->
+    <!-- Bootstrap 5.3 (CSS) – Estilos responsivos y componentes -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<body class="bg-light">                                <!-- Fondo gris claro para contraste -->
 
-<!-- Cuerpo del documento: fondo gris claro (bg-light) para mejor contraste -->
-<body class="bg-light">
+<div class="container mt-5" style="max-width: 400px;"> <!-- Contenedor centrado y angosto -->
+    <div class="card shadow">                           <!-- Tarjeta con sombra (efecto elevado) -->
 
-<!-- Contenedor principal con margen superior y ancho máximo de 400px -->
-<!-- mt-5 = margin-top: 3rem, style="max-width: 400px;" centra mejor el formulario -->
-<div class="container mt-5" style="max-width: 400px;">
-
-    <!-- Tarjeta (card) con sombra para dar efecto de elevación -->
-    <div class="card shadow">
-
-        <!-- Cabecera de la tarjeta: fondo primario (azul), texto blanco, centrado -->
+        <!-- CABECERA DE LA TARJETA (azul primario, texto blanco) -->
         <div class="card-header bg-primary text-white text-center">
-            <h3>🔧 TechPOS V3</h3> <!-- Icono de herramienta + nombre del sistema -->
+            <h3>🔧 TechPOS</h3>
         </div>
 
-        <!-- Cuerpo de la tarjeta: contiene el formulario y los mensajes -->
+        <!-- CUERPO DE LA TARJETA: formulario y mensajes condicionales -->
         <div class="card-body">
 
-            <!-- ================================================== -->
-            <!-- FORMULARIO DE LOGIN                               -->
-            <!-- ================================================== -->
-            <!--
-                th:action="@{/login}" → Envía el formulario a la URL /login.
-                Spring Security intercepta esta URL y procesa la autenticación.
-                method="post" → Los datos se envían por POST (seguro, no van en la URL).
+            <!-- ========================================================== -->
+            <!-- FORMULARIO DE LOGIN                                        -->
+            <!--================================================================
+            th:action="@{/login}" → Spring Security intercepta esta URL (POST).
+            Los nombres de los campos DEBEN ser "username" y "password".
             -->
             <form th:action="@{/login}" method="post">
 
-                <!-- Campo: Nombre de usuario -->
+                <!-- CAMPO: NOMBRE DE USUARIO -->
                 <div class="mb-3">
-                    <label>Usuario</label>
+                    <label class="form-label">Usuario</label>
+                    <input type="text" name="username"
+                           class="form-control"
+                           required
+                           autofocus
+                           placeholder="Ingresa tu usuario">
                     <!--
-                        name="username" → Nombre del campo esperado por Spring Security.
-                        class="form-control" → Estilo Bootstrap.
-                        required → El navegador no permite enviar vacío.
-                        autofocus → El cursor se posiciona automáticamente aquí al cargar la página.
+                        required   → validación HTML5 (no permite vacío)
+                        autofocus  → el cursor inicia aquí al cargar la página
                     -->
-                    <input type="text" name="username" class="form-control" required autofocus>
                 </div>
 
-                <!-- Campo: Contraseña -->
+                <!-- CAMPO: CONTRASEÑA (con botón para mostrar/ocultar) -->
                 <div class="mb-3">
-                    <label>Contraseña</label>
+                    <label class="form-label">Contraseña</label>
+
+                    <!-- Grupo input + botón (Bootstrap Input Group) -->
+                    <div class="input-group">
+                        <input type="password" name="password"
+                               id="passwordField"
+                               class="form-control"
+                               required
+                               placeholder="Escribe tu contraseña">
+                        <!--
+                            Botón para mostrar/ocultar contraseña.
+                            type="button" → evita que envíe el formulario.
+                            Al hacer clic, cambia el tipo del campo entre "password" y "text".
+                        -->
+                        <button class="btn btn-outline-secondary" type="button" id="togglePasswordBtn">
+                            👁️
+                        </button>
+                    </div>
                     <!--
-                        name="password" → Nombre del campo esperado por Spring Security.
-                        type="password" → Oculta los caracteres con puntos/asteriscos.
-                        required → No permite enviar vacío.
+                        NOTA: El ícono 👁️ es universal y no requiere librerías externas.
+                        Si prefieres Bootstrap Icons, reemplaza por <i class="bi bi-eye"></i>
+                        y agrega el CDN de Bootstrap Icons.
                     -->
-                    <input type="password" name="password" class="form-control" required>
                 </div>
 
-                <!-- Botón de envío: ancho completo (w-100) y color primario -->
-                <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+                <!-- BOTÓN DE ENVÍO (ancho completo) -->
+                <button type="submit" class="btn btn-primary w-100">
+                    Iniciar sesión
+                </button>
             </form>
 
-            <!-- ================================================== -->
-            <!-- MENSAJES CONDICIONALES (error / logout)           -->
-            <!-- ================================================== -->
-
-            <!-- Mensaje de error: se muestra si la URL contiene el parámetro 'error' -->
-            <!-- Ejemplo: /login?error (Spring Security redirige aquí automáticamente al fallar login) -->
+            <!-- ========================================================== -->
+            <!-- MENSAJES CONDICIONALES (error / logout)                   -->
+            <!-- ========================================================== -->
+            <!--
+                th:if="${param.error}"   → se activa si la URL contiene ?error
+                th:if="${param.logout}"  → se activa si la URL contiene ?logout
+                Spring Security añade estos parámetros automáticamente.
+            -->
             <div th:if="${param.error}" class="alert alert-danger mt-3">
-                Usuario o contraseña incorrectos
+                ❌ Usuario o contraseña incorrectos
             </div>
 
-            <!-- Mensaje de cierre de sesión: se muestra si la URL contiene el parámetro 'logout' -->
-            <!-- Ejemplo: /login?logout (Spring Security redirige aquí después de cerrar sesión) -->
             <div th:if="${param.logout}" class="alert alert-info mt-3">
-                Sesión cerrada correctamente
+                🔓 Sesión cerrada correctamente
             </div>
 
-        </div>
-        <!-- Fin del cuerpo de la tarjeta -->
-    </div>
-    <!-- Fin de la tarjeta -->
-</div>
-<!-- Fin del contenedor -->
+        </div> <!-- Fin card-body -->
+    </div> <!-- Fin card -->
+</div> <!-- Fin container -->
+
+<!-- ========================================================== -->
+<!-- JAVASCRIPT: FUNCIONALIDAD "MOSTRAR/OCULTAR CONTRASEÑA"    -->
+<!-- ========================================================== -->
+<script>
+    // 1. Obtener referencias al campo de contraseña y al botón
+    const passwordInput = document.getElementById('passwordField');
+    const toggleButton = document.getElementById('togglePasswordBtn');
+
+    // 2. Asegurar que los elementos existen (seguridad)
+    if (passwordInput && toggleButton) {
+        // 3. Evento click en el botón
+        toggleButton.addEventListener('click', function () {
+            // Obtener el tipo actual del input
+            const currentType = passwordInput.getAttribute('type');
+            // Cambiar entre 'password' (oculta) y 'text' (visible)
+            const newType = currentType === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', newType);
+
+            // Opcional: cambiar el emoji/icono del botón para feedback visual
+            // Si es texto visible → mostrar ícono de "ocultar" (🙈), si está oculto → mostrar 👁️
+            this.textContent = newType === 'password' ? '👁️' : '🙈';
+        });
+    }
+</script>
+
+<!--
+    EXPLICACIÓN DEL OPERADOR TERNARIO USADO EN EL SCRIPT:
+    newType = currentType === 'password' ? 'text' : 'password';
+    Significado:
+        Si la contraseña está actualmente oculta (type="password")
+        entonces la cambiamos a visible (type="text"),
+        de lo contrario la volvemos a ocultar (type="password").
+-->
 </body>
 </html>

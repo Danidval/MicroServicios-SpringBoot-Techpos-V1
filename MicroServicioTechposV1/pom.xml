@@ -39,7 +39,7 @@
     <artifactId>techpos-springboot</artifactId>  <!-- Nombre del artefacto (JAR generado) -->
     <version>0.0.1-SNAPSHOT</version>       <!-- Versión actual (SNAPSHOT = en desarrollo) -->
     <name>techpos-springboot</name>         <!-- Nombre legible del proyecto -->
-    <description>TechPOS V3 - Autenticación y CRUD</description> <!-- Breve descripción -->
+    <description>TechPOS - Autenticación y CRUD</description> <!-- Breve descripción -->
 
     <!-- ***************************************************** -->
     <!-- PROPIEDADES GLOBALES                                  -->
@@ -56,7 +56,8 @@
         <!-- *********************************************** -->
         <!-- SPRING BOOT WEB (MVC)                           -->
         <!-- *********************************************** -->
-        <!-- Incluye: Tomcat embebido, Jackson, validación, etc. -->
+        <!-- Kit Completo de Spring Boot para crear apis rest en el
+         servidor-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -65,7 +66,8 @@
         <!-- *********************************************** -->
         <!-- THYMELEAF (Motor de plantillas)                 -->
         <!-- *********************************************** -->
-        <!-- Permite generar HTML dinámico con expresiones Thymeleaf -->
+        <!-- Permite generar HTML dinámico con expresiones Thymeleaf
+        html dinamico y condicional-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -75,6 +77,10 @@
         <!-- SPRING DATA JPA (Persistencia)                  -->
         <!-- *********************************************** -->
         <!-- Incluye Hibernate + ORM para acceso a base de datos -->
+        <!--Spring Boot Starter Data JPA usa ORM para mapear tus tablas de
+        la base de datos SQL a clases Java, y al extender JpaRepository
+        te da automáticamente todos los métodos CRUD sin que
+        tengas que escribir ni una línea de SQL.-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -84,6 +90,10 @@
         <!-- CONECTOR MYSQL (JDBC Driver)                    -->
         <!-- *********************************************** -->
         <!-- Permite a Hibernate conectarse a MySQL -->
+        <!--MySQL JDBC Driver es el conector que permite a tu aplicación
+        Spring Boot comunicarse con el motor de MySQL. Es el puente
+        que Hibernate necesita para enviar y recibir datos directamente
+        del motor engine de MySQL.-->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -94,6 +104,8 @@
         <!-- ARGON2 (Bouncy Castle) - Hashing de contraseñas -->
         <!-- *********************************************** -->
         <!-- Proporciona el algoritmo Argon2id para PasswordEncoder de Spring Security -->
+        <!--Se usa para codificar la contraseña en texto plano y genera un hash, guarda en la base de datos
+        y se compara en caso de acceso al login-->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
@@ -104,6 +116,7 @@
         <!-- VALIDACIÓN DE BEANS (Jakarta Validation)        -->
         <!-- *********************************************** -->
         <!-- Habilita anotaciones como @NotBlank, @Size, @Pattern en las entidades -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>

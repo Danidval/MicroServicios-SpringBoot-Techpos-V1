@@ -1,103 +1,140 @@
 package org.example.microserviciotechposv1.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 /**
- * Configuración de seguridad del sistema (Spring Security).
- * Define las reglas de acceso, encriptación de contraseñas y gestión de sesiones
- * de acuerdo a los requerimientos técnicos del proyecto.
- * * @author Danid Vallejos
- * @version 1.0
+ * Configuración de seguridad centralizada para el microservicio TechPOS V1.
+ *
+ * Define las políticas de acceso, gestión de sesiones manuales para API REST,
+ * configuración de CORS para la integración con React y cifrado de contraseñas.
+ * Esta clase es el núcleo que permite la comunicación segura entre el backend
+ * y el componente frontend del proyecto formativo.
+ *
+ * @author Danid Vallejos
+ * @version 1.1
  */
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
-    /**
-     * Constructor para la inyección de dependencias del servicio de usuarios.
-     * @param userDetailsService Servicio que gestiona la carga de usuarios desde la base de datos.
-     */
     public SecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     /**
-     * Configura la cadena de filtros de seguridad (Security Filter Chain).
-     * Define qué rutas son públicas y cuáles requieren roles específicos.
-     * * @param http Objeto para configurar la seguridad web.
-     * @return SecurityFilterChain configurado.
-     * @throws Exception Si ocurre un error en la configuración.
+     * Define el repositorio para el contexto de seguridad.
+     * Es fundamental para que el AuthRestController guarde manualmente la sesión
+     * y el JSESSIONID sea persistente entre peticiones[cite: 8].
+     */
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
+
+    /**
+     * Configuración principal de la cadena de filtros de seguridad.
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // Deshabilitación de CSRF para facilitar el desarrollo inicial del módulo
+                // Habilita CORS y deshabilita CSRF para permitir peticiones desde el origen de React[cite: 8]
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
 
+                // Registra el repositorio de contexto para el manejo manual de sesiones[cite: 8]
+                .securityContext(context -> context
+                        .securityContextRepository(securityContextRepository())
+                )
+
+                // Definición de reglas de autorización por ruta
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Recursos públicos: Permitir acceso a login y assets (CSS, JS, Imágenes)
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
-
-                        /**
-                         * NUEVA REGLA PARA MICROSERVICIOS:
-                         * Se autoriza el acceso a los endpoints de la API REST (/api/**).
-                         * Esto permite que el sistema funcione como un proveedor de datos (JSON)
-                         * cumpliendo con los estándares de arquitectura desacoplada solicitados.
-                         */
+                        .requestMatchers("/api/auth/**").permitAll() // Permite login sin estar autenticado[cite: 8]
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        // Restringe el acceso a la API administrativa solo a usuarios con rol 'administrador'
                         .requestMatchers("/api/**").hasRole("administrador")
-
-                        // 2. Control de acceso por rol: Gestión de usuarios restringida a administradores
-                        .requestMatchers("/usuarios/**").hasRole("administrador")
-
-                        // 3. Regla general: Cualquier otra petición requiere autenticación previa
                         .anyRequest().authenticated()
                 )
 
-                // Configuración del formulario de inicio de sesión personalizado
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard", true)
-                        .permitAll()
-                )
-
-                // Manejo de excepciones para mejorar la experiencia de usuario (UX)
+                // Manejo de excepciones para responder con estados HTTP adecuados en lugar de redirecciones
                 .exceptionHandling(exception -> exception
-                        // Redirección personalizada en caso de que el usuario no tenga permisos suficientes
-                        .accessDeniedPage("/dashboard?prohibido")
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No autorizado");
+                        })
                 )
 
-                // Configuración del proceso de cierre de sesión
+                // Política de creación de sesiones: Solo si es necesario para mantener al usuario logueado[cite: 8]
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+
+                // Configuración de cierre de sesión personalizada para API REST
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true) // Invalida la sesión actual del servidor
-                        .deleteCookies("JSESSIONID") // Elimina la cookie de sesión del navegador
-                        .permitAll()
+                        .logoutUrl("/api/auth/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK); // Retorna 200 OK tras logout
+                        })
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                 )
 
-                // Integración del servicio de detalles de usuario para la validación de credenciales
                 .userDetailsService(userDetailsService);
 
         return http.build();
     }
 
     /**
-     * Define el algoritmo de encriptación para las contraseñas de los usuarios.
-     * Se utiliza Argon2, cumpliendo con los estándares modernos de ciberseguridad.
-     * * @return Instancia de Argon2PasswordEncoder.
+     * Configura el intercambio de recursos de origen cruzado (CORS).
+     * Permite que React (en puerto 5173) se comunique con este backend (puerto 8080)[cite: 8, 9].
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Origen de Vite[cite: 9]
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // Cabeceras permitidas para la compatibilidad con Axios y manejo de tokens/cookies[cite: 8]
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With"));
+        configuration.setAllowCredentials(true); // REQUERIDO para permitir el envío de cookies de sesión[cite: 8]
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    /**
+     * Define el algoritmo de hashing para las contraseñas.
+     * Argon2 es el estándar recomendado para máxima seguridad de credenciales.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Implementación de Argon2 compatible con Spring Security 6.x / 5.8+
         return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+    }
+
+    /**
+     * Expone el AuthenticationManager para ser utilizado en el controlador de login manual[cite: 8].
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
