@@ -1,168 +1,157 @@
-# ?? MicroServicioTechposV1 - Backend API REST para TechPOS
-
-Este es el **backend oficial** del sistema TechPOS, desarrollado como un microservicio con **Spring Boot 3.2.5**. Expone una **API REST** completa para ser consumida por el frontend en React (o cualquier otro cliente) y adem®¢s ofrece un panel de acceso b®¢sico con Thymeleaf (login y dashboard). La gesti®Æn de usuarios se realiza exclusivamente a trav®¶s de la API `/api/usuarios`.
-
+# MicroServicioTechposV1 - Backend API REST para TechPOS
+ 
+Este es el **backend oficial** del sistema TechPOS, desarrollado como un microservicio con **Spring Boot 3.2.5**. Expone una **API REST** completa para ser consumida por el frontend en React (o cualquier otro cliente) y adem√°s ofrece un panel de acceso b√°sico con Thymeleaf (login y dashboard). La gesti√≥n de usuarios se realiza exclusivamente a trav√©s de la API `/api/usuarios`.
+ 
 ---
-
-## ?? Tecnolog®™as principales
-
-| Tecnolog®™a | Versi®Æn | Prop®Æsito |
+ 
+## Tecnolog√≠as principales
+ 
+| Tecnolog√≠a | Versi√≥n | Prop√≥sito |
 |------------|---------|-----------|
 | Java | 21 | Lenguaje base |
 | Spring Boot | 3.2.5 | Framework principal |
-| Spring Security | 6.x | Autenticaci®Æn y RBAC |
+| Spring Security | 6.x (incluido con Spring Boot 3.2.5) | Autenticaci√≥n y RBAC |
 | Spring Data JPA | 3.2.5 | Persistencia |
 | MySQL | 8.0+ | Base de datos |
-| Argon2 (BouncyCastle) | 1.76 | Hashing de contrase?as (seguridad bancaria) |
-| Thymeleaf | 3.1.x | Panel de login y dashboard (solo vistas auxiliares) |
-| Maven | 3.9+ | Gesti®Æn de dependencias |
-
+| Argon2 (BouncyCastle) | 1.76 | Hashing de contrase√±as |
+| Thymeleaf | 3.1.x | Panel de login y dashboard (vistas auxiliares) |
+| Maven | 3.9+ | Gesti√≥n de dependencias |
+ 
 ---
-
-## ?? Estructura del proyecto (real, basada en el c®Ædigo)
-
+ 
+## Estructura del proyecto
+ 
 ```
 MicroServicioTechposV1/
-©¶
-©¿©§©§ pom.xml
-©¿©§©§ mvnw, mvnw.cmd
-©¿©§©§ .gitignore, .gitattributes
-©¿©§©§ README.md
-©¶
-©¿©§©§ database/
-©¶   ©∏©§©§ setup_bd_techpos_v1.sql      °˚ Crea bd_techposv2, tabla usuario, carga 4 usuarios (clave: 123)
-©¶
-©¿©§©§ src/main/java/org/example/microserviciotechposv1/
-©¶   ©¿©§©§ MicroServicioTechposV1Application.java
-©¶   ©¿©§©§ config/
-©¶   ©¶   ©∏©§©§ SecurityConfig.java          °˚ CORS (localhost:5173), Argon2, sesi®Æn manual
-©¶   ©¿©§©§ controller/
-©¶   ©¶   ©¿©§©§ AuthRestController.java      °˚ POST /api/auth/login (JSON) + sesi®Æn manual
-©¶   ©¶   ©¿©§©§ LoginController.java         °˚ GET /login y /dashboard (Thymeleaf)
-©¶   ©¶   ©¿©§©§ LoginRequest.java            °˚ DTO para login JSON
-©¶   ©¶   ©∏©§©§ UsuarioController.java       °˚ API REST /api/usuarios (CRUD completo)
-©¶   ©¿©§©§ model/
-©¶   ©¶   ©¿©§©§ Rol.java                     °˚ Enum (administrador, tecnico, recepcionista, inventario)
-©¶   ©¶   ©∏©§©§ Usuario.java                 °˚ Entidad JPA (con validaciones)
-©¶   ©¿©§©§ repository/
-©¶   ©¶   ©∏©§©§ UsuarioRepository.java
-©¶   ©∏©§©§ service/
-©¶       ©¿©§©§ CustomUserDetailsService.java
-©¶       ©∏©§©§ UsuarioService.java
-©¶
-©∏©§©§ src/main/resources/
-    ©¿©§©§ application.properties
-    ©¿©§©§ static/
-    ©∏©§©§ templates/
-        ©¿©§©§ dashboard.html                °˚ Panel simple (solo informativo)
-        ©¿©§©§ login.html                    °˚ Formulario de login (Thymeleaf)
-        ©∏©§©§ usuarios/                     °˚ Plantillas sin uso (no hay controlador web)
-            ©¿©§©§ formulario.html
-            ©∏©§©§ lista.html
+‚îÇ
+‚îú‚îÄ‚îÄ pom.xml
+‚îú‚îÄ‚îÄ mvnw, mvnw.cmd
+‚îú‚îÄ‚îÄ .gitignore, .gitattributes
+‚îú‚îÄ‚îÄ README.md
+‚îÇ
+‚îú‚îÄ‚îÄ database/
+‚îÇ   ‚îî‚îÄ‚îÄ setup_bd_techpos_v1.sql       ‚Üê Crea bd_techposv2, tabla usuario, carga 4 usuarios (clave: 123)
+‚îÇ
+‚îî‚îÄ‚îÄ src/main/java/org/example/microserviciotechposv1/
+    ‚îú‚îÄ‚îÄ MicroServicioTechposV1Application.java
+    ‚îú‚îÄ‚îÄ config/
+    ‚îÇ   ‚îî‚îÄ‚îÄ SecurityConfig.java           ‚Üê CORS (localhost:5173), Argon2, sesi√≥n manual
+    ‚îú‚îÄ‚îÄ controller/
+    ‚îÇ   ‚îú‚îÄ‚îÄ AuthRestController.java       ‚Üê POST /api/auth/login (JSON) + sesi√≥n manual
+    ‚îÇ   ‚îú‚îÄ‚îÄ LoginController.java          ‚Üê GET /login y /dashboard (Thymeleaf)
+    ‚îÇ   ‚îú‚îÄ‚îÄ LoginRequest.java             ‚Üê DTO para login JSON
+    ‚îÇ   ‚îî‚îÄ‚îÄ UsuarioController.java        ‚Üê API REST /api/usuarios (CRUD completo)
+    ‚îú‚îÄ‚îÄ model/
+    ‚îÇ   ‚îú‚îÄ‚îÄ Rol.java                      ‚Üê Enum (administrador, tecnico, recepcionista, inventario)
+    ‚îÇ   ‚îî‚îÄ‚îÄ Usuario.java                  ‚Üê Entidad JPA (con validaciones)
+    ‚îú‚îÄ‚îÄ repository/
+    ‚îÇ   ‚îî‚îÄ‚îÄ UsuarioRepository.java
+    ‚îî‚îÄ‚îÄ service/
+        ‚îú‚îÄ‚îÄ CustomUserDetailsService.java
+        ‚îî‚îÄ‚îÄ UsuarioService.java
 ```
-
-> **Nota:** Las plantillas `lista.html` y `formulario.html` existen pero **no est®¢n conectadas** a ning®≤n controlador. El proyecto es puramente API REST para el CRUD de usuarios; el panel de administraci®Æn web no est®¢ implementado.
-
+ 
+> **Nota:** Las plantillas `lista.html` y `formulario.html` dentro de `templates/usuarios/` existen pero **no est√°n conectadas a ning√∫n controlador web**. El CRUD de usuarios se gestiona exclusivamente a trav√©s de la API REST. Estas plantillas se conservan por herencia del proyecto anterior y no afectan el funcionamiento.
+ 
 ---
-
-## ?? Seguridad y autenticaci®Æn
-
-- **Password encoder**: `Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8()`
-- **Sesiones**: `SessionCreationPolicy.IF_REQUIRED` + `HttpSessionSecurityContextRepository` (para login v®™a JSON)
-- **Reglas de autorizaci®Æn**:
-  - `/api/auth/**` °˙ p®≤blico
-  - `/api/**` °˙ solo rol `administrador`
-  - `/login`, `/dashboard`, `/css/**`, `/js/**`, `/images/**` °˙ p®≤blicos
-  - Cualquier otra ruta °˙ requiere autenticaci®Æn
-- **CORS**: Origen permitido `http://localhost:5173`, credenciales `true`
-
+ 
+## Seguridad y autenticaci√≥n
+ 
+- **Password encoder:** `Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8()`
+- **Gesti√≥n de sesi√≥n:** `SessionCreationPolicy.IF_REQUIRED` + `HttpSessionSecurityContextRepository` (necesario para login v√≠a JSON con persistencia manual del contexto de seguridad)
+- **Reglas de autorizaci√≥n:**
+  - `/api/auth/**` ‚Üí p√∫blico
+  - `/api/**` ‚Üí solo rol `administrador`
+  - `/login`, `/dashboard`, `/css/**`, `/js/**`, `/images/**` ‚Üí p√∫blicos
+  - Cualquier otra ruta ‚Üí requiere autenticaci√≥n
+- **CORS:** Origen permitido `http://localhost:5173`, `allowCredentials: true`
 ---
-
-## ?? Endpoints de la API REST
-
-| M®¶todo | Endpoint | Descripci®Æn | Requiere rol |
+ 
+## Endpoints de la API REST
+ 
+| M√©todo | Endpoint | Descripci√≥n | Requiere rol |
 |--------|----------|-------------|--------------|
-| POST | `/api/auth/login` | Autenticaci®Æn (devuelve JSON con perfil) | p®≤blico |
+| POST | `/api/auth/login` | Autenticaci√≥n (devuelve JSON con perfil del usuario) | p√∫blico |
 | GET | `/api/usuarios` | Listar todos los usuarios | `administrador` |
 | GET | `/api/usuarios/{id}` | Obtener usuario por ID | `administrador` |
-| POST / PUT | `/api/usuarios` | Crear o actualizar usuario (JSON) | `administrador` |
+| POST / PUT | `/api/usuarios` | Crear o actualizar usuario (cuerpo JSON) | `administrador` |
 | DELETE | `/api/usuarios/{id}` | Eliminar usuario | `administrador` |
-
-### Ejemplo de login (desde React con Axios)
-
+ 
+### Ejemplo de login desde React con Axios
+ 
 ```javascript
 const response = await axios.post('http://localhost:8080/api/auth/login', {
   username: 'admin',
   password: '123'
 }, { withCredentials: true });
-
-// Respuesta:
+ 
+// Respuesta esperada:
 // { id, nombre, usuario, rol, activo }
 ```
-
-Todas las peticiones posteriores deben incluir `withCredentials: true` para enviar la cookie `JSESSIONID`.
-
+ 
+> Todas las peticiones posteriores al login deben incluir `withCredentials: true` para enviar la cookie `JSESSIONID` y mantener la sesi√≥n activa.
+ 
 ---
-
-## ??? Instalaci®Æn y ejecuci®Æn
-
+ 
+## Instalaci√≥n y ejecuci√≥n
+ 
 ### Requisitos previos
-
+ 
 - JDK 21
 - MySQL 8.0+
-- Maven 3.9+ (o usar el wrapper `./mvnw`)
-
+- Maven 3.9+ (o usar el wrapper incluido `./mvnw`)
 ### Pasos
-
+ 
 1. **Clonar el repositorio**
-   ```
+   ```bash
    git clone https://github.com/Danidval/MicroServicios-SpringBoot-Techpos-V1.git
    ```
-
+ 
 2. **Crear la base de datos**
-   Ejecuta el script `database/setup_bd_techpos_v1.sql` en tu MySQL.
-   Esto crea la base `bd_techposv2`, la tabla `usuario` y carga 4 usuarios de prueba con contrase?a `123` (hasheada con Argon2).
-
-3. **Configurar credenciales** en `src/main/resources/application.properties`:
+   Ejecuta el script `database/setup_bd_techpos_v1.sql` en tu cliente MySQL. Este script crea la base de datos `bd_techposv2`, la tabla `usuario` y carga 4 usuarios de prueba con contrase√±a `123` (hasheada con Argon2).
+3. **Configurar credenciales de MySQL**
+   Abre `src/main/resources/application.properties` y ajusta el usuario y contrase√±a seg√∫n tu entorno local:
    ```properties
    spring.datasource.url=jdbc:mysql://localhost:3306/bd_techposv2?useSSL=false&serverTimezone=America/Bogota&allowPublicKeyRetrieval=true
    spring.datasource.username=root
-   spring.datasource.password=tu_contrase?a
+   spring.datasource.password=TU_CONTRASE√ëA
    ```
-
-4. **Ejecutar la aplicaci®Æn**
+ 
+4. **Ejecutar la aplicaci√≥n**
    ```bash
-   ./mvnw spring-boot:run   # Linux/macOS
-   mvnw.cmd spring-boot:run # Windows
+   # Linux / macOS
+   ./mvnw spring-boot:run
+ 
+   # Windows
+   mvnw.cmd spring-boot:run
    ```
-
-5. **Probar**
-   - Acceso web (solo login/dashboard): `http://localhost:8080/login`
-   - API (con Postman o frontend React): `POST http://localhost:8080/api/auth/login`
-
+ 
+5. **Verificar funcionamiento**
+   - Panel web (login/dashboard): `http://localhost:8080/login`
+   - API REST (desde Postman o frontend React): `POST http://localhost:8080/api/auth/login`
 ---
-
-## ?? Usuarios de prueba
-
-| Rol            | Usuario  | Contrase?a |
-|----------------|----------|------------|
-| Administrador  | `admin`  | `123`      |
-| T®¶cnico        | `carlos` | `123`      |
-| Recepcionista  | `laura`  | `123`      |
-| Inventario     | `inv`    | `123`      |
-
+ 
+## Usuarios de prueba
+ 
+| Rol | Usuario | Contrase√±a |
+|-----|---------|------------|
+| Administrador | `admin` | `123` |
+| T√©cnico | `carlos` | `123` |
+| Recepcionista | `laura` | `123` |
+| Inventario | `inv` | `123` |
+ 
 ---
-
-## ?? Notas importantes
-
-- **El CRUD de usuarios solo est®¢ disponible v®™a API REST**, no hay interfaz web para gestionar usuarios.
-- Las plantillas Thymeleaf `formulario.html` y `lista.html` **no son utilizadas**; se mantienen por herencia del proyecto anterior pero no afectan al funcionamiento.
-- La sesi®Æn se maneja con cookies `JSESSIONID`; aseg®≤rate de que tu frontend env®™e `withCredentials: true`.
-- Para cualquier cambio en la estructura de la base de datos, modifica el script SQL y reinicia la aplicaci®Æn (el `ddl-auto=validate` no altera el esquema autom®¢ticamente).
-
+ 
+## Notas importantes
+ 
+- El CRUD de usuarios **solo est√° disponible v√≠a API REST**; no existe interfaz web para gestionar usuarios desde el navegador.
+- La sesi√≥n se maneja mediante cookies `JSESSIONID`. Es obligatorio que el frontend env√≠e `withCredentials: true` en cada petici√≥n protegida.
+- El `ddl-auto=validate` en `application.properties` significa que Hibernate **valida** el esquema existente pero **no lo modifica**. Si realizas cambios en la estructura de la base de datos, actualiza el script SQL y vuelve a ejecutarlo antes de reiniciar la aplicaci√≥n.
+- El naming strategy est√° configurado para respetar el CamelCase de los campos Java (`idUsuario`, `fechaCreacion`, etc.) sin convertirlos a snake_case.
 ---
-
-## ?? Autor
-
-**Danid Esneider Vallejos Almeida**
-Proyecto para el programa de An®¢lisis y Desarrollo de Software ®C SENA
+ 
+## Autor
+ 
+**Danid Esneider Vallejos Almeida**  
+Programa: An√°lisis y Desarrollo de Software ‚Äî SENA  
+Repositorio frontend: [https://github.com/Danidval/techpos-frontend](https://github.com/Danidval/techpos-frontend)
